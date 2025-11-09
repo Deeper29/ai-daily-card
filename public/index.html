@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  />
+  <title>Coze Card · Minimal UI</title>
+  <style>
+    :root { --bg:#0b0f1a; --fg:#eaeef7; --muted:#97a3b6; --card:#121826; }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto}
+    .wrap{max-width:760px;margin:0 auto;padding:24px}
+    .card{background:var(--card);border:1px solid #223047;border-radius:14px;padding:20px}
+    .row{display:flex;gap:12px;align-items:center}
+    textarea, input, button{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #2a3a52;background:#0f1422;color:var(--fg)}
+    textarea{min-height:120px;resize:vertical}
+    button{cursor:pointer}
+    .muted{color:var(--muted);font-size:13px}
+    .out{white-space:pre-wrap;background:#0f1422;padding:12px;border-radius:10px;border:1px solid #2a3a52;min-height:120px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 style="margin:0 0 16px;">Coze Card · Minimal UI</h1>
+    <div class="card">
+      <div class="muted" style="margin-bottom:8px;">给工作流一个输入（input）</div>
+      <textarea id="inp" placeholder="例如：RAG 或者 你想要的输入文本"></textarea>
+      <div class="row" style="margin:12px 0;">
+        <button id="btn">运行工作流</button>
+      </div>
+      <div class="muted" style="margin:8px 0;">返回结果</div>
+      <div id="out" class="out">（等待运行…）</div>
+      <div class="muted" style="margin-top:10px;">如果失败，请先访问 <code>/debug</code> 检查环境变量，然后再试。</div>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('btn');
+    const inp = document.getElementById('inp');
+    const out = document.getElementById('out');
+
+    function show(o){ out.textContent = typeof o === 'string' ? o : JSON.stringify(o, null, 2); }
+
+    btn.onclick = async () => {
+      show('运行中……');
+      try {
+        const r = await fetch('/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input: inp.value || 'RAG' })
+        });
+        const j = await r.json();
+        show(j);
+      } catch (e) {
+        show({ error: String(e) });
+      }
+    };
+  </script>
+</body>
+</html>
