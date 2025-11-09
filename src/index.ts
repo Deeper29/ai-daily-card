@@ -46,4 +46,13 @@ app.get("/", (_, res) => {
   res.sendFile(path.resolve("public/index.html"))
 })
 
+app.get("/debug", (_, res) => {
+  res.json({
+    has_COZE_API_KEY: !!process.env.COZE_API_KEY,
+    COZE_API_KEY_prefix: process.env.COZE_API_KEY?.slice(0, 5) + "****",
+    has_WORKFLOW_ID: !!process.env.WORKFLOW_ID,
+    WORKFLOW_ID: process.env.WORKFLOW_ID
+  })
+})
+
 export default app
