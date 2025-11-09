@@ -1,10 +1,13 @@
 import express from "express"
-import fetch from "node-fetch"
+import path from "path"
 
 const app = express()
 app.use(express.json())
 
-// 调用 Coze 工作流
+// ---- 让 public/ 中的 html css js 可直接访问 ----
+app.use(express.static(path.join(process.cwd(), "public")))
+
+// ---- 调用 Coze workflow ----
 app.post("/run", async (req, res) => {
   try {
     const userInput = req.body.input
@@ -21,7 +24,6 @@ app.post("/run", async (req, res) => {
       })
     })
 
-    // 拿 streaming，取最后一条输出
     const reader = r.body!.getReader()
     let result = ""
 
@@ -38,8 +40,10 @@ app.post("/run", async (req, res) => {
   }
 })
 
+
+// 首页 -> 自动发送 public/index.html
 app.get("/", (_, res) => {
-  res.send("Coze Card Service Running")
+  res.sendFile(path.resolve("public/index.html"))
 })
 
 export default app
