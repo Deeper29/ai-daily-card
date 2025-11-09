@@ -1,0 +1,9 @@
+{
+    "functions": {
+      "api/index.ts": {
+        "regions": ["hkg1", "sin1", "icn1"]
+      }
+    },
+    "regions": ["hkg1", "sin1", "icn1"]
+  }
+  
